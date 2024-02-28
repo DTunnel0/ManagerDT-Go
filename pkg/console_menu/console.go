@@ -2,12 +2,12 @@ package consolemenu
 
 import (
 	"fmt"
-	"os"
-	"os/exec"
 )
 
 type ConsoleMenu interface {
 	AddItem(item MenuItem)
+	RemoveItem(item MenuItem)
+	FindItem(ID int) MenuItem
 	Display()
 }
 
@@ -31,16 +31,37 @@ func (c *consoleMenu) AddItem(item MenuItem) {
 	c.items = append(c.items, item)
 }
 
-func (c *consoleMenu) Display() {
-	for {
-		c.clearScreen()
-		fmt.Print(c.formatter.Format(c.title, c.items))
-		c.selectInput()
-
-		if c.itemSelected.ShouldExit() {
+func (c *consoleMenu) RemoveItem(item MenuItem) {
+	for index, i := range c.items {
+		if i == item {
+			c.items = append(c.items[:index], c.items[index+1:]...)
 			break
 		}
 	}
+}
+
+func (c *consoleMenu) FindItem(ID int) MenuItem {
+	for _, item := range c.items {
+		if item.ID() == ID {
+			return item
+		}
+	}
+	return nil
+}
+
+func (c *consoleMenu) Display() {
+	defer c.cleanUp()
+
+	for c.itemSelected == nil || !c.itemSelected.ShouldExit() {
+		c.clearScreen()
+		fmt.Print(c.formatter.Format(c.title, c.items))
+		c.selectInput()
+	}
+}
+
+func (c *consoleMenu) cleanUp() {
+	c.itemReturned = nil
+	c.itemSelected = nil
 }
 
 func (c *consoleMenu) selectInput() {
@@ -57,7 +78,5 @@ func (c *consoleMenu) selectInput() {
 }
 
 func (c *consoleMenu) clearScreen() {
-	cmd := exec.Command("clear")
-	cmd.Stdout = os.Stdout
-	cmd.Run()
+	ClearScreen()
 }

@@ -1,10 +1,12 @@
 package consolemenu
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
+	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
@@ -99,4 +101,19 @@ func GetIPV4() string {
 	ipv4 := strings.TrimSpace(string(bytes))
 	os.WriteFile("./ip", []byte(ipv4), 0644)
 	return ipv4
+}
+
+func PausePrompt(prompt ...string) {
+	if len(prompt) > 0 {
+		fmt.Print(prompt[0])
+	} else {
+		fmt.Print(ApplyColor("Enter para continuar...", BLUE))
+	}
+	bufio.NewReader(os.Stdin).ReadBytes('\n')
+}
+
+func ClearScreen() {
+	cmd := exec.Command("clear")
+	cmd.Stdout = os.Stdout
+	cmd.Run()
 }

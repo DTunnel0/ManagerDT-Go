@@ -16,7 +16,7 @@ func createBanner() string {
 	stats := GetMemStats()
 	clock := time.Now().Format("15:04:05")
 
-	menu := createMenuBar("DT MANAGER") + "\n"
+	menu := createMenuBar("DT MANAGER-GO") + "\n"
 	menu += ApplyColor(fmt.Sprintf("OS: %-31s", ApplyColor(distroName, GREEN)), RED)
 	menu += ApplyColor(fmt.Sprintf("BY: %-27s", ApplyColor("@DuTra01", GREEN)), RED)
 	menu += ApplyColor(fmt.Sprintf("HORA: %s\n", ApplyColor(clock, GREEN)), RED)
