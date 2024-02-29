@@ -3,6 +3,7 @@ package gateway
 import (
 	"context"
 	"fmt"
+	"os"
 	"os/exec"
 	"strconv"
 	"strings"
@@ -67,11 +68,13 @@ func (u *userSystemGateway) Delete(ctx context.Context, user *entity.User) error
 
 func (u *userSystemGateway) ChangePassword(ctx context.Context, user *entity.User) error {
 	cmd := exec.CommandContext(ctx,
-		"echo",
-		fmt.Sprintf("%s:%s", user.Username, user.Password),
-		"|",
-		"chpasswd",
+		"bash",
+		"-c",
+		fmt.Sprintf("echo %s:%s | chpasswd", user.Username, user.Password),
 	)
+
+	cmd.Stdout = os.Stdout
+
 	return cmd.Run()
 }
 
