@@ -94,6 +94,7 @@ func (r *userSQLiteRepository) FindAll(ctx context.Context) ([]*entity.User, err
 
 	return users, nil
 }
+
 func (r *userSQLiteRepository) Delete(ctx context.Context, user ...*entity.User) error {
 	tx, err := r.db.BeginTx(ctx, nil)
 	if err != nil {
@@ -115,4 +116,19 @@ func (r *userSQLiteRepository) Delete(ctx context.Context, user ...*entity.User)
 	}
 
 	return tx.Commit()
+}
+
+func (r *userSQLiteRepository) ChangePassword(ctx context.Context, user *entity.User) error {
+	stmt, err := r.db.PrepareContext(ctx, "UPDATE users SET password =? WHERE id =?")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.ExecContext(ctx, user.Password, user.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

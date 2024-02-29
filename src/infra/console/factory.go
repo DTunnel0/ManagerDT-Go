@@ -17,10 +17,22 @@ func MakeCreateUserConsole() *CreateUserConsole {
 
 func MakeDeleteUserConsole() *DeleteUserConsole {
 	consoleMenu := consolemenu.NewConsoleMenu("DELETAR USUARIO", consolemenu.NewFormatter())
+	formatter := menu.NewDefaultFormatter()
 	userRepository := repository.NewUserSQLiteRepository()
 	userGateway := gateway.NewUserSystemGateway()
 	getUsersUseCase := usecase.NewGetUsersUseCase(userRepository)
 	deleteUserUseCase := usecase.NewDeleteUserUseCase(userRepository, userGateway)
-	menu := menu.NewUserMenuConsole(consoleMenu)
+	menu := menu.NewUserMenuConsole(consoleMenu, formatter)
 	return NewDeleteUserConsole(menu, getUsersUseCase, deleteUserUseCase)
+}
+
+func MakeChangePasswordUserConsole() *ChangePasswordUserConsole {
+	userRepository := repository.NewUserSQLiteRepository()
+	userGateway := gateway.NewUserSystemGateway()
+	getUsersUseCase := usecase.NewGetUsersUseCase(userRepository)
+	changePasswordUserUseCase := usecase.NewChangePasswordUserUseCase(userGateway, userRepository)
+	consoleMenu := consolemenu.NewConsoleMenu("ALTERAR SENHA", consolemenu.NewFormatter())
+	formatter := NewPasswordUserMenuConsoleFormatter()
+	menu := menu.NewUserMenuConsole(consoleMenu, formatter)
+	return NewChangePasswordUserConsole(menu, getUsersUseCase, changePasswordUserUseCase)
 }

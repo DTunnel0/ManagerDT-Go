@@ -9,4 +9,5 @@ import (
 type UserGateway interface {
 	Create(ctx context.Context, user *entity.User) (*entity.User, error)
 	Delete(ctx context.Context, user *entity.User) error
+	ChangePassword(ctx context.Context, user *entity.User) error
 }

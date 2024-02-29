@@ -65,6 +65,16 @@ func (u *userSystemGateway) Delete(ctx context.Context, user *entity.User) error
 	return nil
 }
 
+func (u *userSystemGateway) ChangePassword(ctx context.Context, user *entity.User) error {
+	cmd := exec.CommandContext(ctx,
+		"echo",
+		fmt.Sprintf("%s:%s", user.Username, user.Password),
+		"|",
+		"chpasswd",
+	)
+	return cmd.Run()
+}
+
 func hashPassword(password string) (string, error) {
 	cmd := exec.Command("openssl", "passwd", "-1", password)
 	output, err := cmd.Output()

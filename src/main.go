@@ -8,10 +8,14 @@ import (
 func main() {
 	formatter := consoleMenu.NewFormatter()
 
+	createUserConsole := console.MakeCreateUserConsole()
+	deleteUserConsole := console.MakeDeleteUserConsole()
+	changePasswordUserConsole := console.MakeChangePasswordUserConsole()
+
 	submenu := consoleMenu.NewConsoleMenu("GERENCIAR USUARIOS", formatter)
-	submenu.AddItem(consoleMenu.NewFuncItem(1, "CRIAR USUARIO", false, func(a ...any) *any { console.MakeCreateUserConsole().Run(); return nil }))
-	submenu.AddItem(consoleMenu.NewFuncItem(2, "DELETAR USUARIO", false, func(a ...any) *any { console.MakeDeleteUserConsole().Run(); return nil }))
-	submenu.AddItem(consoleMenu.NewMenuItem(3, "ALTERAR SENHA"))
+	submenu.AddItem(consoleMenu.NewFuncItem(1, "CRIAR USUARIO", false, func(a ...any) *any { createUserConsole.Run(); return nil }))
+	submenu.AddItem(consoleMenu.NewFuncItem(2, "DELETAR USUARIO", false, func(a ...any) *any { deleteUserConsole.Run(); return nil }))
+	submenu.AddItem(consoleMenu.NewFuncItem(3, "ALTERAR SENHA", false, func(a ...any) *any { changePasswordUserConsole.Run(); return nil }))
 	submenu.AddItem(consoleMenu.NewMenuItem(4, "ALTERAR LIMITE"))
 	submenu.AddItem(consoleMenu.NewExitItem())
 

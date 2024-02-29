@@ -9,6 +9,7 @@ type ConsoleMenu interface {
 	RemoveItem(item MenuItem)
 	FindItem(ID int) MenuItem
 	Display()
+	CleanUp()
 }
 
 type consoleMenu struct {
@@ -62,6 +63,11 @@ func (c *consoleMenu) Display() {
 func (c *consoleMenu) cleanUp() {
 	c.itemReturned = nil
 	c.itemSelected = nil
+}
+
+func (c *consoleMenu) CleanUp() {
+	c.cleanUp()
+	c.items = c.items[:0]
 }
 
 func (c *consoleMenu) selectInput() {
