@@ -58,8 +58,8 @@ func NewUserSQLiteRepository() contracts.UserRepository {
 
 func (r *userSQLiteRepository) Save(ctx context.Context, user *entity.User) error {
 	stmt, err := r.db.PrepareContext(ctx, `
-		INSERT INTO users (id, uuid, username, password, connection_limit, created_at, expires_at) 
-		VALUES (?, ?, ?, ?, ?, ?, ?)
+		INSERT OR REPLACE INTO users (id, uuid, username, password, connection_limit, created_at, expires_at) 
+		VALUES (?, ?, ?, ?, ?, ?, ?) 
 	`)
 	if err != nil {
 		return err
@@ -72,6 +72,15 @@ func (r *userSQLiteRepository) Save(ctx context.Context, user *entity.User) erro
 	}
 
 	return nil
+}
+
+func (r *userSQLiteRepository) FindById(ctx context.Context, id int) (*entity.User, error) {
+	user := &entity.User{}
+	err := r.db.QueryRowContext(ctx, `SELECT * FROM users WHERE id =?`, id).Scan(&user.ID, &user.UUID, &user.Username, &user.Password, &user.Limit, &user.CreatedAt, &user.ExpiresAt)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 func (r *userSQLiteRepository) FindAll(ctx context.Context) ([]*entity.User, error) {
@@ -116,19 +125,4 @@ func (r *userSQLiteRepository) Delete(ctx context.Context, user ...*entity.User)
 	}
 
 	return tx.Commit()
-}
-
-func (r *userSQLiteRepository) ChangePassword(ctx context.Context, user *entity.User) error {
-	stmt, err := r.db.PrepareContext(ctx, "UPDATE users SET password =? WHERE id =?")
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
-
-	_, err = stmt.ExecContext(ctx, user.Password, user.ID)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }

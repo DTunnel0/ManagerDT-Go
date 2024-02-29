@@ -41,14 +41,15 @@ func (c *ChangePasswordUserConsole) Run() error {
 		password := c.password.Value()
 		err := c.changePasswordUserUseCase.Execute(ctx, &usecase.ChangePasswordUserInput{
 			ID:       u.ID,
-			Username: u.Username,
 			Password: password,
 		})
 		defer consolemenu.PausePrompt()
 		if err == nil {
 			u.Password = password
 			fmt.Println(consolemenu.ApplyColor("Senha alterada com sucesso!", consolemenu.GREEN))
+			return
 		}
+		fmt.Println(consolemenu.ApplyColor(fmt.Sprintf("%v", err), consolemenu.RED))
 	})
 
 	for _, user := range users {
@@ -64,8 +65,6 @@ func (c *ChangePasswordUserConsole) Run() error {
 	c.consoleMenuUser.Display()
 	return nil
 }
-
-type PasswordUserMenuConsoleBuilder struct{}
 
 func NewPasswordUserMenuConsoleFormatter() func(*menu.User) string {
 	return func(u *menu.User) string {
