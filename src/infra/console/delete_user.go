@@ -34,16 +34,6 @@ func (c *DeleteUserConsole) Run() error {
 		return err
 	}
 
-	for _, user := range users {
-		c.consoleMenuUser.AddUser(&menu.User{
-			ID:        user.ID,
-			Username:  user.Username,
-			Password:  user.Password,
-			Limit:     user.Limit,
-			ExpiresAt: user.ExpiresAt,
-		})
-	}
-
 	c.consoleMenuUser.SetCallback(func(u *menu.User) {
 		err := c.deleteUserUseCase.Execute(ctx, &usecase.DeleteUserInput{ID: u.ID, Username: u.Username})
 		defer consolemenu.PausePrompt()
@@ -54,6 +44,16 @@ func (c *DeleteUserConsole) Run() error {
 			fmt.Println(consolemenu.ApplyColor(fmt.Sprintf("%v", err), consolemenu.RED))
 		}
 	})
+
+	for _, user := range users {
+		c.consoleMenuUser.AddUser(&menu.User{
+			ID:        user.ID,
+			Username:  user.Username,
+			Password:  user.Password,
+			Limit:     user.Limit,
+			ExpiresAt: user.ExpiresAt,
+		})
+	}
 
 	c.consoleMenuUser.Display()
 	return nil
