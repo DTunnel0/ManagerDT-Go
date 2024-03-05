@@ -11,12 +11,13 @@ func main() {
 	createUserConsole := console.MakeCreateUserConsole()
 	deleteUserConsole := console.MakeDeleteUserConsole()
 	changePasswordUserConsole := console.MakeChangePasswordUserConsole()
+	changeLimitUserConsole := console.MakeChangeLimitUserConsole()
 
 	submenu := consoleMenu.NewConsoleMenu("GERENCIAR USUARIOS", formatter)
 	submenu.AddItem(consoleMenu.NewFuncItem(1, "CRIAR USUARIO", false, func(a ...any) *any { createUserConsole.Run(); return nil }))
 	submenu.AddItem(consoleMenu.NewFuncItem(2, "DELETAR USUARIO", false, func(a ...any) *any { deleteUserConsole.Run(); return nil }))
 	submenu.AddItem(consoleMenu.NewFuncItem(3, "ALTERAR SENHA", false, func(a ...any) *any { changePasswordUserConsole.Run(); return nil }))
-	submenu.AddItem(consoleMenu.NewMenuItem(4, "ALTERAR LIMITE"))
+	submenu.AddItem(consoleMenu.NewFuncItem(4, "ALTERAR LIMITE", false, func(a ...any) *any { changeLimitUserConsole.Run(); return nil }))
 	submenu.AddItem(consoleMenu.NewExitItem())
 
 	menu := consoleMenu.NewConsoleMenu("GERENCIADOR", formatter)

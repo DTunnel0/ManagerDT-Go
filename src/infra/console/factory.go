@@ -36,3 +36,13 @@ func MakeChangePasswordUserConsole() *ChangePasswordUserConsole {
 	menu := menu.NewUserMenuConsole(consoleMenu, formatter)
 	return NewChangePasswordUserConsole(menu, getUsersUseCase, changePasswordUserUseCase)
 }
+
+func MakeChangeLimitUserConsole() *ChangeLimitUserConsole {
+	userRepository := repository.NewUserSQLiteRepository()
+	getUsersUseCase := usecase.NewGetUsersUseCase(userRepository)
+	changeLimitUserUseCase := usecase.NewChangeLimitUserUseCase(userRepository)
+	consoleMenu := consolemenu.NewConsoleMenu("ALTERAR LIMITE", consolemenu.NewFormatter())
+	formatter := NewLimitUserMenuConsoleFormatter()
+	menu := menu.NewUserMenuConsole(consoleMenu, formatter)
+	return NewChangeLimitUserConsole(menu, getUsersUseCase, changeLimitUserUseCase)
+}
